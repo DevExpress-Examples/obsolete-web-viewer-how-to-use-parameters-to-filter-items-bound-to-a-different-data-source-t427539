@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="en-US">
+  <Title Text="Dashboard" />
+  <DataConnections>
+    <DataConnection Name="nwindConnection" ProviderKey="Access97">
+      <Parameters>
+        <Parameter Name="database" Value="../../../nwind.mdb" />
+        <Parameter Name="read only" Value="1" />
+        <Parameter Name="generateConnectionHelper" Value="false" />
+      </Parameters>
+    </DataConnection>
+  </DataConnections>
+  <DataSources>
+    <SqlDataSource ComponentName="dataSource1">
+      <Name>Invoices</Name>
+      <Connection Name="nwindConnection" ProviderKey="Access97">
+        <Parameters>
+          <Parameter Name="database" Value="../../../nwind.mdb" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="Invoices">
+        <Tables>
+          <Table Name="Invoices" Meta="30|30|125|560" />
+        </Tables>
+        <Columns>
+          <Column Table="Invoices" Name="City" />
+          <Column Table="Invoices" Name="Country" />
+          <Column Table="Invoices" Name="OrderDate" />
+          <Column Table="Invoices" Name="ProductName" />
+          <Column Table="Invoices" Name="UnitPrice" />
+          <Column Table="Invoices" Name="Quantity" />
+          <Column Table="Invoices" Name="ExtendedPrice" />
+          <Column Table="Invoices" Name="Freight" />
+          <Column Table="Invoices" Name="ProductID" />
+        </Columns>
+      </Query>
+      <Query Type="SelectQuery" Name="Products">
+        <Tables>
+          <Table Name="Products" Meta="30|30|125|260" />
+          <Table Name="Categories" Meta="185|30|125|160" />
+          <Relation Type="Inner" Parent="Products" Nested="Categories">
+            <KeyColumn Parent="CategoryID" Nested="CategoryID" />
+          </Relation>
+        </Tables>
+        <Columns>
+          <Column Table="Products" Name="ProductID" />
+          <Column Table="Products" Name="ProductName" />
+          <Column Table="Categories" Name="CategoryName" />
+          <Column Table="Categories" Name="Description" />
+          <Column Table="Categories" Name="Picture" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Invoices">
+          <View Name="Invoices">
+            <Field Name="City" Type="String" />
+            <Field Name="Country" Type="String" />
+            <Field Name="OrderDate" Type="DateTime" />
+            <Field Name="ProductName" Type="String" />
+            <Field Name="UnitPrice" Type="Decimal" />
+            <Field Name="Quantity" Type="Int16" />
+            <Field Name="ExtendedPrice" Type="Decimal" />
+            <Field Name="Freight" Type="Decimal" />
+            <Field Name="ProductID" Type="Int32" />
+          </View>
+          <View Name="Products">
+            <Field Name="ProductID" Type="Int32" />
+            <Field Name="ProductName" Type="String" />
+            <Field Name="CategoryName" Type="String" />
+            <Field Name="Description" Type="String" />
+            <Field Name="Picture" Type="ByteArray" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" CommandTimeout="0" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="ProductIDs" AllowMultiselect="true" Visible="false" />
+  </Parameters>
+  <Items>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Tree View 1" DataSource="dataSource1" DataMember="Products">
+      <DataItems>
+        <Dimension DataMember="CategoryName" UniqueName="DataItem0" />
+        <Dimension DataMember="ProductName" UniqueName="DataItem1" />
+        <Measure DataMember="ProductID" SummaryType="Min" UniqueName="DataItem2" />
+      </DataItems>
+      <HiddenMeasures>
+        <Measure UniqueName="DataItem2" />
+      </HiddenMeasures>
+      <FilterDimensions>
+        <Dimension UniqueName="DataItem0" />
+        <Dimension UniqueName="DataItem1" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem1" Name="Chart 1" DataSource="dataSource1" DataMember="Invoices" FilterString="[DataItem1] In (?ProductIDs)">
+      <DataItems>
+        <Dimension DataMember="ProductID" UniqueName="DataItem1" />
+        <Dimension DataMember="OrderDate" DateTimeGroupInterval="MonthYear" UniqueName="DataItem0" />
+        <Measure DataMember="ExtendedPrice" UniqueName="DataItem2" />
+      </DataItems>
+      <HiddenDimensions>
+        <Dimension UniqueName="DataItem1" />
+      </HiddenDimensions>
+      <Arguments>
+        <Argument UniqueName="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value UniqueName="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Grid ComponentName="gridDashboardItem1" Name="Grid 1" DataSource="dataSource1" DataMember="Products" FilterString="[DataItem4] In (?ProductIDs)">
+      <InteractivityOptions IgnoreMasterFilters="true" />
+      <DataItems>
+        <Dimension DataMember="CategoryName" UniqueName="DataItem0" />
+        <Dimension DataMember="ProductName" UniqueName="DataItem1" />
+        <Dimension DataMember="ProductID" UniqueName="DataItem4" />
+      </DataItems>
+      <HiddenDimensions>
+        <Dimension UniqueName="DataItem4" />
+      </HiddenDimensions>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension UniqueName="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension UniqueName="DataItem1" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions AllowGridCellMerge="true" />
+    </Grid>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="19.054652880354507" />
+      <LayoutItem DashboardItem="gridDashboardItem1" Weight="29.542097488921712" />
+      <LayoutItem DashboardItem="chartDashboardItem1" Weight="51.403249630723778" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>
